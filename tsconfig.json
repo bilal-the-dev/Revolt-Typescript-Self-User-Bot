@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022" /* Specifices which version of ecma script the output code will be in, say anything before es6/es2015 then new feature like arrow function changed to normal functions */,
+
+    "module": "NodeNext" /* Specify what module code is generated. */,
+
+    "rootDir": "src", // default longest path outside to non dt files i.e src/modules/app.ts, rootdir be src/modules and dist be app.ts only. If specified src then dist be modules/app.ts
+    "outDir": "dist", // if not specified, js files will be generated next to ts files
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+    "resolveJsonModule": true, // Able to import json as ts doesnt do by default
+    "strict": true /* Enable all strict type-checking options. */
+  },
+  "include": ["src"] // specifies what files will be included in outdir
+}

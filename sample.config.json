@@ -1,0 +1,31 @@
+{
+  "messages": {
+    "01JQR509W3ZZF9BKAA0KY1KRCF": "/claim",
+    "01JDKH7HVTBZ2SDTYMTESVDEZA": "/claim",
+    "01JDKRRS1JA2N0114C24PJ1C09": "/claim",
+    "01JDKAFHS1W2BTPSS9YDB6WNEP": "ca"
+  },
+  "ticket-servers": [
+    "01JQPMQTPQY371KCTAWVZXFTEN",
+    "456",
+    "01JDRTWWDQ7VM1ZEEKP58EBPQA"
+  ],
+  "timers": [
+    {
+      "serverId": "01JQPMQTPQY371KCTAWVZXFTEN",
+      "delayInSeconds": 4
+    },
+    {
+      "serverId": "01JDKZ9Y7AEPQQDA7BVQA10DZ7",
+      "delayInSeconds": 0
+    },
+    {
+      "serverId": "01JE1XEFCY4Q",
+      "delayInSeconds": 0
+    },
+    {
+      "serverId": "01JE1X5SDNCY4Q",
+      "delayInSeconds": 0
+    }
+  ]
+}

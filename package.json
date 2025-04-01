@@ -1,0 +1,24 @@
+{
+  "name": "updatedrevoltbot",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "npm run build && node --env-file=.env dist/index.js",
+    "dev": "nodemon --env-file=.env dist/index.js -w dist",
+    "build": "rimraf dist && tsc",
+    "build:dev": "tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.2",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.13.14"
+  }
+}

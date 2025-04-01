@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Revolt WS</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+      }
+      #status {
+        font-size: 20px;
+        font-weight: bold;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Revolt WebSocket Connection</h1>
+    <p id="status">Connecting to WebSocket Revolt...</p>
+  </body>
+
+  <script>
+    const API_BASE_URL = "http://localhost:3000/api";
+
+    async function start() {
+      const res = await fetch(API_BASE_URL + "/ws");
+
+      const data = await res.json();
+      const ws = new WebSocket(data.ws);
+
+      console.log(ws.bufferedAmount);
+
+      ws.addEventListener("open", async (event) => {
+        try {
+          console.log("Connection opened!");
+
+          document.getElementById("status").textContent = "Connection opened!";
+          document.getElementById("status").style.color = "green";
+
+          const res = await fetch(API_BASE_URL + "/revolt-session");
+
+          const data = await res.json();
+          console.log(data);
+
+          ws.send(
+            JSON.stringify({
+              type: "Authenticate",
+              token: data.session,
+            })
+          );
+
+          console.log(ws.bufferedAmount);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+
+      ws.addEventListener("message", async (event) => {
+        try {
+          console.log("Something received over socket");
+
+          let cacheData;
+          const json = JSON.parse(event.data);
+          console.log(json);
+
+          if (json.type === "Error") {
+            console.log(event);
+            console.log(event.data);
+            console.log("Error occured!!!");
+          }
+
+          if (json.type === "Ready") {
+            console.log(
+              "Client became ready, starting to ping every 10 seconds!"
+            );
+
+            setInterval(() => {
+              console.log("Pinging socket!");
+
+              ws.send(
+                JSON.stringify({
+                  type: "Ping",
+                  data: 0,
+                })
+              );
+            }, 1000 * 10);
+
+            cacheData = {
+              type: "Ready",
+              data: json.channels
+                .filter((c) => c.channel_type === "TextChannel")
+                .map((c) => ({
+                  channelId: c._id,
+                  channelName: c.name,
+                  serverId: c.server,
+                })),
+            };
+          }
+
+          if (json.type === "ChannelCreate") {
+            console.log("Channel created!");
+
+            if (json.channel_type !== "TextChannel") return;
+
+            cacheData = {
+              type: "ChannelCreate",
+              data: {
+                channelId: json._id,
+                channelName: json.name,
+                serverId: json.server,
+              },
+            };
+          }
+
+          if (json.type === "ChannelDelete") {
+            console.log("Channel deleted!");
+
+            cacheData = {
+              type: "ChannelDelete",
+              data: {
+                channelId: json.id,
+              },
+            };
+          }
+
+          if (json.type === "Message") {
+            console.log("Message!");
+
+            if (
+              json.content !==
+              "If you'd like to close this ticket, use the `/close` command.\nClaiming has currently been disabled."
+            )
+              return;
+
+            await fetch(API_BASE_URL + "/message", {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+              },
+              body: JSON.stringify({
+                ...json,
+              }),
+            });
+          }
+
+          if (cacheData)
+            await fetch(API_BASE_URL + "/cache", {
+              method: "POST",
+              body: JSON.stringify(cacheData),
+              headers: {
+                "content-type": "application/json",
+              },
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      });
+
+      ws.addEventListener("close", (event) => {
+        console.log("Connectio closed!");
+
+        console.log(event);
+        console.log(event.code);
+        console.log(event.reason);
+        console.log(event.wasClean);
+        document.getElementById("status").textContent = "Connection closed!";
+        document.getElementById("status").style.color = "red";
+      });
+
+      ws.addEventListener("error", (event) => {
+        console.log("Error occured");
+
+        console.log(event);
+
+        document.getElementById("status").textContent = "Error occurred!";
+        document.getElementById("status").style.color = "orange";
+      });
+    }
+
+    start();
+  </script>
+</html>
