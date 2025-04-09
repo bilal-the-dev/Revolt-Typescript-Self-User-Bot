@@ -22,14 +22,21 @@ puppeteer.use(StealthPlugin());
   const page = await browser.newPage();
 
   // Go to your site
+  await page.exposeFunction("logFromPage", (msg) => {
+    console.log("[Browser Log]:", msg);
+  });
+
   await page.goto("https://revolt.onech.at/", { waitUntil: "networkidle2" });
 
   await page.screenshot({ path: "app.png" });
+
   const three = await page.evaluate(
     async (token, CONFIG) => {
       const REVOLT_API_BASE_URL = "https://revolt-api.onech.at";
       const cacheStore = [];
       const alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+      await window.logFromPage("Establishing socket!");
 
       const ws = new WebSocket(`wss://revolt-ws.onech.at?token=${token}`);
 
@@ -38,6 +45,8 @@ puppeteer.use(StealthPlugin());
       ws.addEventListener("open", async (event) => {
         try {
           console.log("Connection opened!");
+
+          await window.logFromPage("Connection opened!");
 
           // console.log(ws.bufferedAmount);
         } catch (error) {
@@ -184,17 +193,23 @@ puppeteer.use(StealthPlugin());
         }
       });
 
-      ws.addEventListener("close", (event) => {
+      ws.addEventListener("close", async (event) => {
         console.log("Connectio closed!");
 
         console.log(event);
         console.log(event.code);
         console.log(event.reason);
         console.log(event.wasClean);
+
+        await window.logFromPage("Connection closed!");
+        await window.logFromPage(event);
       });
 
-      ws.addEventListener("error", (event) => {
+      ws.addEventListener("error", async (event) => {
         console.log("Error occured");
+
+        await window.logFromPage("Error occured");
+        await window.logFromPage(event);
 
         console.log(event);
       });
