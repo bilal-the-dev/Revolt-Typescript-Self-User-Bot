@@ -10,7 +10,13 @@ puppeteer.use(StealthPlugin());
 
 (async () => {
   // Launch the browser
-  const browser = await puppeteer.launch({ devtools: true });
+  const browser = await puppeteer.launch({
+    headless: process.env.NODE_ENV === "production",
+    ...(process.platform === "linux" && {
+      args: ["--no-sandbox"],
+      executablePath: "/usr/bin/chromium-browser",
+    }),
+  });
 
   // Create a page
   const page = await browser.newPage();
@@ -18,6 +24,7 @@ puppeteer.use(StealthPlugin());
   // Go to your site
   await page.goto("https://revolt.onech.at/", { waitUntil: "networkidle2" });
 
+  await page.screenshot({ path: "app.png" });
   const three = await page.evaluate(
     async (token, CONFIG) => {
       const REVOLT_API_BASE_URL = "https://revolt-api.onech.at";
