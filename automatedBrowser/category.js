@@ -165,14 +165,16 @@ puppeteer.use(StealthPlugin());
               );
             }
 
-            const categoryText = CONFIG.category_ids[channel.categoryId];
+            // const categoryText = CONFIG.category_ids[channel.categoryId];
 
-            if (!categoryText) return;
+            // if (!categoryText) return;
 
-            console.log(categoryText);
+            // console.log(categoryText);
 
             const isCorrect = json.embeds.some((e) =>
-              e.description.includes(categoryText)
+              e.description.includes(
+                "Would you like to continue? Type yes if not /cancel"
+              )
             );
 
             if (!isCorrect) return console.log("not correct");
