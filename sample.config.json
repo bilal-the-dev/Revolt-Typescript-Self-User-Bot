@@ -5,6 +5,7 @@
     "01JDKRRS1JA2N0114C24PJ1C09": "/claim",
     "01JDKAFHS1W2BTPSS9YDB6WNEP": "ca"
   },
+  "category_ids": { "01JQPMQTPQY371KCTAWVZXFTEN": "hello" },
   "ticket-servers": [
     "01JQPMQTPQY371KCTAWVZXFTEN",
     "456",
