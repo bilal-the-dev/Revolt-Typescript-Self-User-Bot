@@ -16,6 +16,7 @@ puppeteer.use(StealthPlugin());
       args: ["--no-sandbox"],
       executablePath: "/usr/bin/chromium-browser",
     }),
+    devtools: true,
   });
 
   // Create a page
@@ -26,6 +27,18 @@ puppeteer.use(StealthPlugin());
     console.log("[Browser Log]:", msg);
   });
 
+  await page.setRequestInterception(true);
+  page.on("request", (request) => {
+    const url = request.url();
+
+    console.log(`request to: ${url}`);
+    if (url.startsWith("https://revolt.onech.at/cdn-cgi")) {
+      console.log(`Blocked request to: ${url}`);
+      request.abort(); // block the request
+    } else {
+      request.continue(); // allow all other requests
+    }
+  });
   await page.goto("https://revolt.onech.at/", { waitUntil: "networkidle2" });
 
   await page.screenshot({ path: "app.png" });
@@ -127,7 +140,7 @@ puppeteer.use(StealthPlugin());
 
             if (
               json.content !==
-              "If you'd like to close this ticket, use the `/close` command.\nClaiming has currently been disabled."
+              "If you'd like to close this ticket, use the `/close` command.\nIf you'd like to claim it use the `/claim` command, just know claiming can sometimes be buggy."
             )
               return;
 
