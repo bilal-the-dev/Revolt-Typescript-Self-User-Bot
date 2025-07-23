@@ -7,7 +7,7 @@ async function fetchAPI(params) {
     //   "cache-control": "no-cache",
     //   pragma: "no-cache",
     //   priority: "u=1, i",
-    referer: "https://revolt.onech.at/",
+    // referer: "https://revolt.onech.at/",
     //   "sec-ch-ua":
     //     '"Not)A;Brand";v="8", "Chromium";v="138", "Microsoft Edge";v="138"',
     //   "sec-ch-ua-mobile": "?0",

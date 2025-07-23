@@ -1,3 +1,4 @@
+import { RequestBuilder } from "ts-curl-impersonate";
 import {
   channelData,
   makeRequestOptions,
@@ -5,6 +6,7 @@ import {
   revoltConfiguration,
   sessionLoginResponse,
 } from "../utils/typing.js";
+import CurlImpersonate from "node-curl-impersonate";
 
 export default class revoltClient {
   revoltApiBaseUrl: string = process.env.REVOLT_API_BASE_URL;
@@ -38,21 +40,39 @@ export default class revoltClient {
 
     if (options.body) requestOptions.body = JSON.stringify(options.body);
 
-    if (options.auth)
-      requestOptions.headers = { "X-Session-Token": this.#token! };
+    requestOptions.headers = {
+      "X-Session-Token": this.#token!,
+      referer: "https://revolt.onech.at/",
+      "user-agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+    };
 
-    const res = await fetch(
-      `${this.revoltApiBaseUrl}${options.url}`,
-      requestOptions
-    );
+    const req = new RequestBuilder()
+      .url(`${this.revoltApiBaseUrl}${options.url}`)
+      .preset({ name: "chrome", version: "110" })
+      .method(options.method)
+      .headers(requestOptions.headers);
 
-    if (!res.ok) {
-      console.log(res);
-      console.log(await res.json());
-      throw new Error(res.statusText);
-    }
+    if (options.body) req.body(options.body);
 
-    return res.json();
+    const response = await req.send();
+
+    console.log(response);
+
+    if (response.stderr) throw new Error(response.stderr);
+    return JSON.parse(response.response!);
+    // const res = await fetch(
+    //   `${this.revoltApiBaseUrl}${options.url}`,
+    //   requestOptions
+    // );
+
+    // if (!res.ok) {
+    //   console.log(res);
+    //   console.log(await res.json());
+    //   throw new Error(res.statusText);
+    // }
+
+    // return res.json();
   }
 
   async fetchConfiguration(): Promise<revoltConfiguration> {
