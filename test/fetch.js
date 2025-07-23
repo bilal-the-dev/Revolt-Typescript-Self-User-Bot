@@ -1,4 +1,4 @@
-const { default: CurlImpersonate } = require("node-curl-impersonate");
+import CurlImpersonate from "node-curl-impersonate";
 
 async function fetchAPI(params) {
   const headers = {
