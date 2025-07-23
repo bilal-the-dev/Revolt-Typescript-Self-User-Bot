@@ -1,4 +1,3 @@
-import { RequestBuilder } from "ts-curl-impersonate";
 import {
   channelData,
   makeRequestOptions,
@@ -47,20 +46,33 @@ export default class revoltClient {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
     };
 
-    const req = new RequestBuilder()
-      .url(`${this.revoltApiBaseUrl}${options.url}`)
-      .preset({ name: "chrome", version: "110" })
-      .method(options.method)
-      .headers(requestOptions.headers);
+    const curlImpersonate = new CurlImpersonate(
+      `${this.revoltApiBaseUrl}${options.url}`,
+      {
+        method: options.method,
+        impersonate: "chrome-116",
+        headers: requestOptions.headers,
+        body: options.body,
+      }
+    );
 
-    if (options.body) req.body(options.body);
+    // perform the request
+    const curlResponse = await curlImpersonate.makeRequest();
 
-    const response = await req.send();
+    // extract the response data
+    const response = curlResponse.response;
+    const responseStatusCode = curlResponse.statusCode;
 
-    console.log(response);
-
-    if (response.stderr) throw new Error(response.stderr);
-    return JSON.parse(response.response!);
+    // if the server responded with a 4xx or 5xx error
+    if (
+      responseStatusCode &&
+      ["4", "5"].includes(responseStatusCode.toString()[0])
+    ) {
+      console.log(curlResponse);
+      //   console.log(await res.json());
+      throw new Error(response);
+    }
+    return JSON.parse(response);
     // const res = await fetch(
     //   `${this.revoltApiBaseUrl}${options.url}`,
     //   requestOptions
