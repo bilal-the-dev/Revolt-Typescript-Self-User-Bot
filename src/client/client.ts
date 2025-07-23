@@ -40,11 +40,12 @@ export default class revoltClient {
     if (options.body) requestOptions.body = JSON.stringify(options.body);
 
     requestOptions.headers = {
-      "X-Session-Token": this.#token!,
       referer: "https://revolt.onech.at/",
       "user-agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
     };
+
+    if (options.auth) requestOptions.headers["X-Session-Token"] = this.#token!,
 
     const curlImpersonate = new CurlImpersonate(
       `${this.revoltApiBaseUrl}${options.url}`,
