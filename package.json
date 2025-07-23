@@ -15,6 +15,7 @@
   "description": "",
   "dependencies": {
     "express": "^5.1.0",
+    "node-curl-impersonate": "^1.5.4",
     "puppeteer": "^24.6.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
