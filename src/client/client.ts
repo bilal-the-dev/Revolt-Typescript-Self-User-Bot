@@ -53,7 +53,7 @@ export default class revoltClient {
         method: options.method,
         impersonate: "chrome-116",
         headers: requestOptions.headers,
-        body: options.body,
+        body: JSON.stringify(options.body),
       }
     );
 
