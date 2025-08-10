@@ -28,5 +28,7 @@
       "serverId": "01JE1X5SDNCY4Q",
       "delayInSeconds": 0
     }
-  ]
+  ],
+  "messages_to_spam": 10,
+  "delay_between_spam_messages_in_second": 2
 }

@@ -6,6 +6,7 @@
     "start": "npm run build && node --env-file=.env dist/index.js",
     "start-browser": "node --env-file=.env automatedBrowser/index.js",
     "start-category-browser": "node --env-file=.env automatedBrowser/category.js",
+    "start-spam-browser": "node --env-file=.env automatedBrowser/spam.js",
     "dev": "nodemon --env-file=.env dist/index.js -w dist",
     "build": "rimraf dist && tsc",
     "build:dev": "tsc -w"
