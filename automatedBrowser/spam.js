@@ -82,51 +82,12 @@ puppeteer.use(StealthPlugin());
                 })
               );
             }, 1000 * 10);
-
-            const readyData = [];
-
-            const textChannels = json.channels.filter(
-              (c) => c.channel_type === "TextChannel"
-            );
-
-            for (const textChannel of textChannels) {
-              const server = json.servers.find(
-                (s) => s._id === textChannel.server
-              );
-
-              console.log(server);
-
-              if (!server) continue;
-
-              const category = server.categories.find((cat) =>
-                cat.channels.includes(textChannel._id)
-              );
-              console.log(category);
-
-              if (!category) continue;
-              readyData.push({
-                channelId: textChannel._id,
-                channelName: textChannel.name,
-                serverId: textChannel.server,
-                categoryId: category.id,
-              });
-            }
-
-            cacheStore.push(...readyData);
-
-            await window.logFromPage(cacheStore);
           }
 
           if (json.type === "ChannelCreate") {
             console.log("Channel created!");
 
             if (json.channel_type !== "TextChannel") return;
-
-            cacheStore.push({
-              channelId: json._id,
-              channelName: json.name,
-              serverId: json.server,
-            });
 
             //  check if ticket then spam!!!
 
@@ -143,64 +104,6 @@ puppeteer.use(StealthPlugin());
                 );
             }
           }
-
-          if (json.type === "ChannelDelete") {
-            console.log("Channel deleted!");
-
-            const i = cacheStore.findIndex((c) => c.channelId === json.id);
-
-            if (c === -1)
-              return console.log(
-                `Channel delete received but not found in cache ${json.id}`
-              );
-
-            cacheStore.splice(i, 1);
-          }
-
-          //   if (json.type === "Message") {
-          //     console.log("Message!");
-
-          //     // if (
-          //     //   json.content !==
-          //     //   "If you'd like to close this ticket, use the `/close` command.\nClaiming has currently been disabled."
-          //     // )
-          //     //   return;
-
-          //     if (!json.embeds?.length) return console.log(" no embed");
-
-          //     const channel = cacheStore.find(
-          //       (c) => c.channelId === json.channel
-          //     );
-
-          //     if (!channel) {
-          //       return console.log(
-          //         "Message came but channel not found in cache!!!"
-          //       );
-          //     }
-
-          //     // const categoryText = CONFIG.category_ids[channel.categoryId];
-
-          //     // if (!categoryText) return;
-
-          //     // console.log(categoryText);
-
-          //     const isCorrect = json.content.includes(
-          //       "New ticket has been made!"
-          //     );
-
-          //     if (!isCorrect) return console.log("not correct");
-
-          //     const timer = CONFIG.timers.find(
-          //       (t) => t.serverId === channel.serverId
-          //     );
-
-          //     if (timer)
-          //       setTimeout(async () => {
-          //         sendMessage(channel);
-          //       }, 1000 * timer.delayInSeconds);
-
-          //     if (!timer) await sendMessage(channel);
-          //   }
         } catch (error) {
           console.log(error);
         }
