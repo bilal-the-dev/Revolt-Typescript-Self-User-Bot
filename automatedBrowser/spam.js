@@ -91,7 +91,7 @@ puppeteer.use(StealthPlugin());
 
             //  check if ticket then spam!!!
 
-            if (!CONFIG["ticket-servers"].includes(json.server)) return;
+            if (!CONFIG["spam-servers"].includes(json.server)) return;
             if (!json.name.startsWith("ticket-")) return;
 
             const amount = new Array(CONFIG.messages_to_spam);
@@ -156,7 +156,6 @@ puppeteer.use(StealthPlugin());
     config
   );
 
-  console.log(three);
 
   // Close browser.
   //   await browser.close();
