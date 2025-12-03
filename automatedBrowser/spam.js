@@ -1,12 +1,12 @@
 // Import puppeteer
 // const puppeteer = require( "puppeteer")
-import { setTimeout } from "node:timers/promises";
 import puppeteer from "puppeteer-extra";
 
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
 import config from "./../config.json" with { type: "json" };
+import { setTimeout } from "timers/promises";
 puppeteer.use(StealthPlugin());
 
 (async () => {
@@ -24,21 +24,20 @@ puppeteer.use(StealthPlugin());
   const page = await browser.newPage();
 
   // Go to your site
-  await page.exposeFunction("logFromPage", (msg) => {
-    console.log("[Browser Log]:", msg);
+
+
+  await page.goto("https://revolt.onech.at/login", {
+    waitUntil: "networkidle2",
   });
 
-  await page.goto("https://revolt.onech.at/", { waitUntil: "networkidle2" });
+  // await page.screenshot({ path: "app.png" });
 
-  await page.screenshot({ path: "app.png" });
-
+  
   const three = await page.evaluate(
     async (token, CONFIG) => {
       const REVOLT_API_BASE_URL = "https://revolt-api.onech.at";
-      const cacheStore = [];
-      const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-      await window.logFromPage("Establishing socket!");
+      // await window.logFromPage("Establishing socket!");
 
       const ws = new WebSocket(`wss://revolt-ws.onech.at?token=${token}`);
 
@@ -46,7 +45,7 @@ puppeteer.use(StealthPlugin());
         try {
           console.log("Connection opened!");
 
-          await window.logFromPage("Connection opened!");
+          // await window.logFromPage("Connection opened!");
 
           // console.log(ws.bufferedAmount);
         } catch (error) {
@@ -137,15 +136,15 @@ puppeteer.use(StealthPlugin());
         console.log(event.reason);
         console.log(event.wasClean);
 
-        await window.logFromPage("Connection closed!");
-        await window.logFromPage(event);
+        // await window.logFromPage("Connection closed!");
+        // await window.logFromPage(event);
       });
 
       ws.addEventListener("error", async (event) => {
         console.log("Error occured");
 
-        await window.logFromPage("Error occured");
-        await window.logFromPage(event);
+        // await window.logFromPage("Error occured");
+        // await window.logFromPage(event);
 
         console.log(event);
       });
@@ -155,7 +154,6 @@ puppeteer.use(StealthPlugin());
     process.env.REVOLT_USER_TOKEN,
     config
   );
-
 
   // Close browser.
   //   await browser.close();
