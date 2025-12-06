@@ -39,19 +39,19 @@ puppeteer.use(StealthPlugin());
       request.continue(); // allow all other requests
     }
   });
-  await page.goto("https://revolt.onech.at/", { waitUntil: "networkidle2" });
+  await page.goto("https://workers.onech.at/", { waitUntil: "networkidle2" });
 
   await page.screenshot({ path: "app.png" });
 
   const three = await page.evaluate(
     async (token, CONFIG) => {
-      const REVOLT_API_BASE_URL = "https://revolt-api.onech.at";
+      const REVOLT_API_BASE_URL = "https://workers.api.onech.at"
       const cacheStore = [];
       const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
       await window.logFromPage("Establishing socket!");
 
-      const ws = new WebSocket(`wss://revolt-ws.onech.at?token=${token}`);
+      const ws = new WebSocket(`wss://workers.gateway.onech.at?token=${token}`);
 
       console.log(ws.bufferedAmount);
 

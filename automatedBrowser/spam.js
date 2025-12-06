@@ -26,7 +26,7 @@ puppeteer.use(StealthPlugin());
   // Go to your site
 
 
-  await page.goto("https://revolt.onech.at/login", {
+  await page.goto("https://workers.onech.at/login", {
     waitUntil: "networkidle2",
   });
 
@@ -35,11 +35,11 @@ puppeteer.use(StealthPlugin());
   
   const three = await page.evaluate(
     async (token, CONFIG) => {
-      const REVOLT_API_BASE_URL = "https://revolt-api.onech.at";
+      const REVOLT_API_BASE_URL = "https://workers.api.onech.at";
 
       // await window.logFromPage("Establishing socket!");
 
-      const ws = new WebSocket(`wss://revolt-ws.onech.at?token=${token}`);
+      const ws = new WebSocket(`wss://workers.gateway.onech.at?token=${token}`);
 
       ws.addEventListener("open", async (event) => {
         try {
