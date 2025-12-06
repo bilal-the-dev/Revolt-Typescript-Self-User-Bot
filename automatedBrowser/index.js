@@ -32,7 +32,7 @@ puppeteer.use(StealthPlugin());
     const url = request.url();
 
     console.log(`request to: ${url}`);
-    if (url.startsWith("https://revolt.onech.at/cdn-cgi")) {
+    if (url.startsWith("https://workers.onech.at/cdn-cgi")) {
       console.log(`Blocked request to: ${url}`);
       request.abort(); // block the request
     } else {
